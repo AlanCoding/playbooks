@@ -1,0 +1,43 @@
+- name: Change cleanup paths setting
+  ansible.builtin.lineinfile:
+    path: /etc/tower/settings.py
+    state: "{{ debug_state | default('present') }}"
+    line: 'AWX_CLEANUP_PATHS = False'
+    create: true
+    mode: '0640'
+    group: awx
+    owner: root
+  become: True
+
+- name: Change cleanup paths setting
+  ansible.builtin.lineinfile:
+    path: /etc/tower/settings.py
+    state: "{{ debug_state | default('present') }}"
+    line: 'RECEPTOR_RELEASE_WORK = False'
+  become: True
+
+- name: Stop supervisor.
+  service:
+    name: 'supervisord'
+    state: stopped
+  become: true
+
+- name: Wait for supervisor to stop.
+  stat:
+    path: '/var/run/supervisor/supervisor.sock'
+  register: result
+  until: not result.stat.exists
+  retries: 10
+  delay: 2
+  become: true
+
+- name: Start supervisor.
+  service:
+    name: 'supervisord'
+    state: started
+  become: true
+
+# - name: restart services
+#   shell: supervisorctl restart tower-processes:*
+#   become_user: awx
+#   become: True
