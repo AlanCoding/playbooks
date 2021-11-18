@@ -1,0 +1,39 @@
+---
+- hosts: automationcontroller,execution_nodes
+  vars_files:
+    - vars/private_vars.yml
+  vars:
+    ansible_user: ec2-user
+    remote_receptor_loc: /usr/bin/receptor
+  tasks:
+    - shell: echo "this is working"
+
+    - name: Stop the receptor service
+      systemd:
+        name: receptor
+        state: stopped
+      become: true
+
+    - name: Copy receptor binary
+      ansible.builtin.copy:
+        src: "{{ receptor_bin }}"
+        dest: "{{ remote_receptor_loc }}"
+        force: true
+        owner: root
+        group: root
+        mode: '0755'
+      become: true
+
+    - name: Start the receptor service
+      systemd:
+        name: receptor
+        state: started
+        enabled: yes
+      become: true
+
+- hosts: automationcontroller
+  tasks:
+    - name: Restart controller services for good measure
+      shell: supervisorctl restart tower-processes:*
+      become_user: awx
+      become: true

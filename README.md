@@ -18,3 +18,19 @@ Playbook example:
 ```
 ansible-playbook -i ~/repos/tower-qa/inventory.patch prod_user.yml
 ```
+
+#### Action - replace receptor binary
+
+Tested on Fedora, go to receptor clone, check out the branch you need
+
+```
+sudo dnf install -y golang
+make
+```
+
+This should populate the receptor binary at the top-level of the receptor checkout.
+Assuming checkout is now at `~/repos/receptor/receptor` then
+
+```
+ansible-playbook -i ~/repos/tower-qa/inventory.patch -e receptor_bin=~/repos/receptor/receptor receptor_bin_swap.yml
+```
