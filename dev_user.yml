@@ -1,0 +1,9 @@
+---
+- hosts: automationcontroller
+  gather_facts: false
+  vars_files:
+    - vars/private_vars.yml
+  vars:
+    ansible_user: awx  # for development environment
+  roles:
+    - superuser

@@ -1,0 +1,14 @@
+- name: create superuser
+  shell: awx-manage createsuperuser --username={{ awx_username | quote}} --email={{ awx_email | quote }} --noinput
+  register: result
+  changed_when: "'That username is already taken' not in result.stderr"
+  failed_when: "'That username is already taken' not in result.stderr and 'Superuser created successfully' not in result.stdout"
+  become_user: awx
+  become: True
+
+- name: set the suepruser password
+  shell: awx-manage update_password --username={{ awx_username }} --password={{ awx_password }}
+  become_user: awx
+  become: True
+  register: result
+  changed_when: "'Password updated' in result.stdout"
