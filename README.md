@@ -32,7 +32,7 @@ ansible-playbook -i <inventory> prod_user.yml
 You want to run a job and have the server preserve the job folders and work unit.
 
 ```
-ansible-playbook -i ~/repos/tower-qa/inventory.patch -e debug_state=present debug_on.yml
+ansible-playbook -i <inventory> -e debug_state=present debug_on.yml
 ```
 
 Switch `debug_state=present` to absent to undo this.

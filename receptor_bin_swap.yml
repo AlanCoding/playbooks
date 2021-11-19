@@ -1,7 +1,6 @@
 ---
+# User needs to supply -e receptor_bin=<location to built receptor executable>
 - hosts: automationcontroller,execution_nodes
-  vars_files:
-    - vars/private_vars.yml
   vars:
     ansible_user: ec2-user
     remote_receptor_loc: /usr/bin/receptor
@@ -28,7 +27,7 @@
       systemd:
         name: receptor
         state: started
-        enabled: yes
+        enabled: true
       become: true
 
 - hosts: automationcontroller

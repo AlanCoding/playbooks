@@ -1,3 +1,4 @@
+---
 - name: Change cleanup paths setting
   ansible.builtin.lineinfile:
     path: /etc/tower/settings.py
@@ -7,14 +8,14 @@
     mode: '0640'
     group: awx
     owner: root
-  become: True
+  become: true
 
 - name: Change cleanup paths setting
   ansible.builtin.lineinfile:
     path: /etc/tower/settings.py
     state: "{{ debug_state | default('present') }}"
     line: 'RECEPTOR_RELEASE_WORK = False'
-  become: True
+  become: true
 
 - name: Stop supervisor.
   service:
