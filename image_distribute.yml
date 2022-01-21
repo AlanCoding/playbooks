@@ -1,4 +1,6 @@
 ---
+# ansible requirements:
+#   containers.podman
 # python requirements:
 #   docker
 - name: Group hosts into node_type groups
@@ -19,7 +21,7 @@
       run_once: true
 
     - name: Archive AWX image from the host machine
-      containers.podman.podman_save:   # containers.podman.podman_save
+      containers.podman.podman_save:   # community.docker.docker_image
         image: "{{ container_image }}"
         dest: "{{ archive_filename }}"
       delegate_to: localhost

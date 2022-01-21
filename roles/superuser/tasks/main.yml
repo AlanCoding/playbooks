@@ -12,7 +12,7 @@
   become_user: awx
   become: true
 
-- name: set the suepruser password
+- name: set the superuser password
   shell: >
     awx-manage update_password
     --username={{ awx_username }}
