@@ -74,3 +74,9 @@ ansible-playbook -i <inventory> image_distribute.yml
 
 Now, if you run a job, it should start within a few seconds, without a minute
 or more of delay.
+
+If you delete the `.tar` file (image archive) then this will trigger re-exporting the image.
+You need this if you need to pick up a change in the awx-ee image, but it's
+more common that you recycle the dev environment containers.
+
+Using a 3 node cluster and re-exporting the image, this playbook takes about 1.5 minutes.
