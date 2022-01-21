@@ -1,0 +1,41 @@
+---
+# python requirements:
+#   docker
+- name: Group hosts into node_type groups
+  import_playbook: group_node_types.yml
+
+- hosts: awx_node_type_hybrid:awx_node_type_control:awx_node_type_execution
+  gather_facts: false
+  max_fail_percentage: 0
+  vars:
+    container_image: quay.io/ansible/awx-ee:latest
+    archive_filename: awx_devel_image.tar
+  tasks:
+    - name: determine if archive already exists
+      stat:
+        path: "{{ archive_filename }}"
+      register: existing_archive
+      delegate_to: localhost
+      run_once: true
+
+    - name: Archive AWX image from the host machine
+      containers.podman.podman_save:   # containers.podman.podman_save
+        image: "{{ container_image }}"
+        dest: "{{ archive_filename }}"
+      delegate_to: localhost
+      run_once: true
+      when: not (existing_archive.stat.exists is defined and existing_archive.stat.exists)
+
+    - name: Copy archive into container
+      ansible.builtin.copy:
+        src: "{{ archive_filename }}"
+        dest: "/var/lib/awx/{{ archive_filename }}"
+        force: true
+      become: true
+      become_user: awx
+
+    - name: Load awx_devel image from tar file inside of container
+      containers.podman.podman_load:  # community.docker.docker_image_load
+        input: "/var/lib/awx/{{ archive_filename }}"
+      become: true
+      become_user: awx

@@ -52,3 +52,25 @@ Assuming checkout is now at `~/repos/receptor/receptor` then
 ```
 ansible-playbook -i <inventory> -e receptor_bin=~/repos/receptor/receptor receptor_bin_swap.yml
 ```
+
+#### Action - pre-populate image cache with EE
+
+This allows you to distribute an image to all the nodes in the cluster.
+Doing this will avoid a long delay before jobs start due to pulling the image.
+Most often, you will want to use this to distribute the control plane EE
+or the default EE for jobs / ad hoc commands / inventory updates.
+
+Start by assuring that you have the EE locally (or that it's not old).
+
+```
+podman pull quay.io/ansible/awx-ee:latest
+```
+
+Then run the playbook:
+
+```
+ansible-playbook -i <inventory> image_distribute.yml
+```
+
+Now, if you run a job, it should start within a few seconds, without a minute
+or more of delay.

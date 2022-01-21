@@ -1,0 +1,16 @@
+---
+- hosts: automationcontroller
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: group automationcontroller group
+      group_by:
+        key: "awx_node_type_{{ node_type | default('hybrid') }}"
+
+- hosts: execution_nodes
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: group automationcontroller group
+      group_by:
+        key: "awx_node_type_{{ node_type | default('execution') }}"
