@@ -5,8 +5,6 @@
     ansible_user: ec2-user
     remote_receptor_loc: /usr/bin/receptor
   tasks:
-    - shell: echo "this is working"
-
     - name: Stop the receptor service
       systemd:
         name: receptor
