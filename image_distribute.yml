@@ -39,5 +39,10 @@
         - name: Load awx_devel image from tar file inside of container
           containers.podman.podman_load:  # community.docker.docker_image_load
             input: "/var/lib/awx/{{ archive_filename }}"
+
+        - name: Delete image to save space
+          file:
+            path: "/var/lib/awx/{{ archive_filename }}"
+            state: absent
       become: true
       become_user: awx
