@@ -1,2 +1,3 @@
 vars/private_vars.yml
 awx_ee_image.tar
+awx_inventory.ini

@@ -11,6 +11,16 @@ This will have groups like `automationcontroller` and `execution_nodes`.
 If using the docker-compose inventory file, there is an inventory script floating
 around which will build an inventory of this format from `docker ps -a` data.
 
+Specifying the inventory file is going to get old, so this will pick up a symlink
+at the following location `awx_inventory.ini`. For example, to set this up:
+
+```
+ln -s ~/repos/tower-qa/playbooks/inventory-docker.py awx_inventory.ini
+```
+
+You can still specify a different inventory with `-i` if you need.
+All the following commands will assume this is set up.
+
 #### Action - create a superuser
 
 Before anything else, you will need a user. Fill in values at `vars/private_vars.yml`
@@ -24,7 +34,7 @@ awx_email: "foo@invalid.com"
 Playbook example:
 
 ```
-ansible-playbook -i <inventory> prod_user.yml
+ansible-playbook prod_user.yml
 ```
 
 #### Action - turn on debugging settings
@@ -32,12 +42,19 @@ ansible-playbook -i <inventory> prod_user.yml
 You want to run a job and have the server preserve the job folders and work unit.
 
 ```
-ansible-playbook -i <inventory> -e debug_state=present debug_on.yml
+ansible-playbook -e debug_state=present debug_on.yml
 ```
 
 Switch `debug_state=present` to absent to undo this.
 
 #### Action - replace receptor binary
+
+Before you go changing anything, you probably want to print the current versions
+that all of the nodes have installed.
+
+```
+ansible-playbook --tags=version receptor_bin_swap.yml
+```
 
 Tested on Fedora, go to receptor clone, check out the branch you need
 
@@ -50,7 +67,7 @@ This should populate the receptor binary at the top-level of the receptor checko
 Assuming checkout is now at `~/repos/receptor/receptor` then
 
 ```
-ansible-playbook -i <inventory> -e receptor_bin=~/repos/receptor/receptor receptor_bin_swap.yml
+ansible-playbook -e receptor_bin=~/repos/receptor/receptor receptor_bin_swap.yml
 ```
 
 #### Action - pre-populate image cache with EE
@@ -69,7 +86,7 @@ podman pull quay.io/ansible/awx-ee:latest
 Then run the playbook:
 
 ```
-ansible-playbook -i <inventory> image_distribute.yml
+ansible-playbook image_distribute.yml
 ```
 
 Now, if you run a job, it should start within a few seconds, without a minute

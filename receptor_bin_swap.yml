@@ -2,7 +2,7 @@
 # User needs to supply -e receptor_bin=<location to built receptor executable>
 - hosts: automationcontroller,execution_nodes
   vars:
-    ansible_user: ec2-user
+    # ansible_user: ec2-user
     remote_receptor_loc: /usr/bin/receptor
   tasks:
     - name: Stop the receptor service
@@ -27,6 +27,16 @@
         state: started
         enabled: true
       become: true
+
+    - name: Obtain the resultant receptor version
+      command: receptor --version
+      tags: version
+      register: result
+
+    - name: Debug the resultant receptor version
+      debug:
+        msg: "{{ result.stdout + '\n\n' + result.stderr }}"
+      tags: version
 
 - hosts: automationcontroller
   tasks:
