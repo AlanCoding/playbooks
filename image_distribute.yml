@@ -3,10 +3,7 @@
 #   containers.podman
 # python requirements:
 #   docker
-- name: Group hosts into node_type groups
-  import_playbook: group_node_types.yml
-
-- hosts: awx_node_type_hybrid:awx_node_type_control:awx_node_type_execution
+- hosts: automationcontroller,execution_nodes
   gather_facts: false
   max_fail_percentage: 0
   vars:
@@ -44,5 +41,17 @@
           file:
             path: "/var/lib/awx/{{ archive_filename }}"
             state: absent
+
+        - name: Get the images on the system, double-check your work
+          command: podman images
+          register: result
+          tags: list
+
+        - name: Show the images on the system, double-check this is what you wanted
+          debug:
+            var: result.stdout
+          tags: list
+
       become: true
       become_user: awx
+      when: node_type is not defined or node_type != 'hop'
