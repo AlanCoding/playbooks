@@ -70,6 +70,27 @@ Assuming checkout is now at `~/repos/receptor/receptor` then
 ansible-playbook -e receptor_bin=~/repos/receptor/receptor receptor_bin_swap.yml
 ```
 
+TODO: still need a playbook that will replace the `receptorctl` package.
+
+#### Action - replace the ansible-runner install
+
+This follows a similar pattern to replacing receptor.
+
+```
+ansible-playbook --tags=version runner_swap.yml
+```
+
+A typical pattern is that you would checkout ansible-runner from within
+your awx directory and install it in-place.
+Assuming you are doing an in-place install with it at `<awx>/testing/ansible-runner`
+
+```
+ansible-playbook -e new_package=file:///awx_devel/testing/ansible-runner runner_swap.yml
+```
+
+This will allow you to make changes to ansible-runner and have them take
+effect in multiple kinds of containers without re-installing.
+
 #### Action - pre-populate image cache with EE
 
 This allows you to distribute an image to all the nodes in the cluster.

@@ -1,0 +1,41 @@
+---
+# User needs to supply -e receptor_bin=<location to built receptor executable>
+- hosts: automationcontroller,execution_nodes
+  gather_facts: false
+  vars:
+    remote_pip_loc: /var/lib/awx/venv/awx/bin/pip
+    remote_runner_loc: /var/lib/awx/venv/awx/bin/ansible-runner  # TODO: prod different
+    new_package: git+https://github.com/ansible/ansible-runner.git
+  tasks:
+    - block:
+      - name: Install new ansible-runner
+        pip:
+          name: "{{ new_package }}"
+          state: forcereinstall
+          virtualenv: /var/lib/awx/venv/awx
+          editable: true
+
+      - block:
+        - name: Obtain the resultant ansible-runner version
+          command: "{{ item }}"
+          tags: version
+          register: result
+          loop:
+            - "{{ remote_pip_loc }} show ansible-runner"
+            - "{{ remote_runner_loc }} --version"
+
+        - name: Debug the resultant receptor version
+          debug:
+            var: result.results | map(attribute='stdout')
+        become_user: awx
+        become: true
+        tags: version
+      when: node_type is not defined or node_type != 'hop'
+
+- hosts: automationcontroller
+  gather_facts: false
+  tasks:
+    - name: Restart controller services to pick up runner version change
+      command: /usr/local/bin/supervisorctl restart tower-processes:*  # TODO: PATH is weird
+      become_user: awx
+      become: true
