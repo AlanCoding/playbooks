@@ -5,7 +5,8 @@
   vars:
     remote_pip_loc: /var/lib/awx/venv/awx/bin/pip
     remote_runner_loc: /var/lib/awx/venv/awx/bin/ansible-runner  # TODO: prod different
-    new_package: git+https://github.com/ansible/ansible-runner.git
+    new_package: git+https://github.com/ansible/ansible-runner.git#egg=ansible-runner
+    editable: true
   tasks:
     - block:
       - name: Install new ansible-runner
@@ -13,7 +14,7 @@
           name: "{{ new_package }}"
           state: forcereinstall
           virtualenv: /var/lib/awx/venv/awx
-          editable: true
+          editable: "{{ editable }}"
 
       - block:
         - name: Obtain the resultant ansible-runner version
