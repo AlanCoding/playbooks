@@ -88,6 +88,12 @@ Assuming you are doing an in-place install with it at `<awx>/testing/ansible-run
 ansible-playbook -e new_package=file:///awx_devel/testing/ansible-runner runner_swap.yml
 ```
 
+To install from a git branch, it needs to be non-editable.
+
+```
+ansible-playbook -e new_package=git+https://github.com/ansible/ansible-runner.git -e editable=false runner_swap.yml
+```
+
 This will allow you to make changes to ansible-runner and have them take
 effect in multiple kinds of containers without re-installing.
 
