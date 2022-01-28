@@ -1,9 +1,0 @@
----
-- hosts: automationcontroller
-  gather_facts: false
-  vars_files:
-    - vars/private_vars.yml
-  vars:
-    ansible_user: ec2-user  # only for ec2 instances
-  roles:
-    - superuser

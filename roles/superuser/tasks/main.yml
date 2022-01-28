@@ -1,7 +1,12 @@
 ---
-- name: create superuser
+- name: Set awx-manage executable for development environment
+  set_fact:
+    awx_manage: /usr/local/bin/awx-manage
+  when: ansible_connection == 'community.docker.docker'
+
+- name: Create superuser without password
   shell: >
-    awx-manage createsuperuser
+    {{ awx_manage }} createsuperuser
     --username={{ awx_username | quote}}
     --email={{ awx_email | quote }} --noinput
   register: result
@@ -12,9 +17,9 @@
   become_user: awx
   become: true
 
-- name: set the superuser password
+- name: Set the superuser password (set in private_vars.yml)
   shell: >
-    awx-manage update_password
+    {{ awx_manage }} update_password
     --username={{ awx_username }}
     --password={{ awx_password }}
   become_user: awx
