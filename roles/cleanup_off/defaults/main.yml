@@ -1,0 +1,4 @@
+settings_loc: /etc/tower/settings.py
+supervisorctl_exc: supervisorctl
+# /usr/bin/supervisorctl  # prod
+# /usr/local/bin/supervisorctl  # dev

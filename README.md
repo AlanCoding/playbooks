@@ -47,6 +47,10 @@ ansible-playbook -e debug_state=present debug_on.yml
 
 Switch `debug_state=present` to absent to undo this.
 
+In the development environment, this will modify the file on your _host_ machine
+at `tools/docker-compose/_sources/local_settings.py`, which is templated by
+the docker-compose playbook. This is hard to track, so be warned.
+
 #### Action - replace receptor binary
 
 Before you go changing anything, you probably want to print the current versions

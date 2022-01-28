@@ -1,8 +1,7 @@
 ---
-- hosts: automationcontroller
+- hosts: automationcontroller:tower
   gather_facts: false
   vars:
-    ansible_user: ec2-user
     debug_state: present
   roles:
     - cleanup_off

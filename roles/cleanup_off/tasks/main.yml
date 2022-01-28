@@ -1,44 +1,32 @@
 ---
+- name: Set settings file and supervisorctl for development environment
+  set_fact:
+    settings_loc: /etc/tower/conf.d/local_settings.py
+    supervisorctl_exc: /usr/local/bin/supervisorctl
+  when: ansible_connection == 'community.docker.docker'
+
 - name: Change cleanup paths setting
   ansible.builtin.lineinfile:
-    path: /etc/tower/settings.py
+    path: "{{ settings_loc }}"
     state: "{{ debug_state | default('present') }}"
     line: 'AWX_CLEANUP_PATHS = False'
-    create: true
-    mode: '0640'
-    group: awx
-    owner: root
+    create: false
+    # you might use these params for file creation, but that is dangerous, do not do it
+    # mode: '0640'
+    # group: awx
+    # owner: root
+    unsafe_writes: true
   become: true
 
 - name: Change cleanup paths setting
   ansible.builtin.lineinfile:
-    path: /etc/tower/settings.py
+    path: "{{ settings_loc }}"
     state: "{{ debug_state | default('present') }}"
     line: 'RECEPTOR_RELEASE_WORK = False'
+    unsafe_writes: true
   become: true
 
-- name: Stop supervisor.
-  service:
-    name: 'supervisord'
-    state: stopped
-  become: true
-
-- name: Wait for supervisor to stop.
-  stat:
-    path: '/var/run/supervisor/supervisor.sock'
-  register: result
-  until: not result.stat.exists
-  retries: 10
-  delay: 2
-  become: true
-
-- name: Start supervisor.
-  service:
-    name: 'supervisord'
-    state: started
-  become: true
-
-# - name: restart services
-#   shell: supervisorctl restart tower-processes:*
-#   become_user: awx
-#   become: True
+- name: restart services
+  shell: "{{ supervisorctl_exc }} restart tower-processes:*"
+  become_user: awx
+  become: True
