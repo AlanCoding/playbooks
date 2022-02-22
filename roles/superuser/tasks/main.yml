@@ -16,6 +16,7 @@
     'Superuser created successfully' not in result.stdout
   become_user: awx
   become: true
+  run_once: true
 
 - name: Set the superuser password (set in private_vars.yml)
   shell: >
@@ -26,3 +27,4 @@
   become: true
   register: result
   changed_when: "'Password updated' in result.stdout"
+  run_once: true
