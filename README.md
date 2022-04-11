@@ -78,7 +78,7 @@ TODO: still need a playbook that will replace the `receptorctl` package.
 
 #### Action - replace the ansible-runner install
 
-This follows a similar pattern to replacing receptor.
+This follows a similar pattern to replacing receptor. First look at what is installed:
 
 ```
 ansible-playbook --tags=version runner_swap.yml
@@ -112,6 +112,12 @@ Start by assuring that you have the EE locally (or that it's not old).
 
 ```
 podman pull quay.io/ansible/awx-ee:latest
+```
+
+Check current images:
+
+```
+ansible-playbook image_distribute.yml --tags=list
 ```
 
 Then run the playbook:
