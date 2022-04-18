@@ -27,6 +27,14 @@
 
     - name: Remote task group
       block:
+        - name: Remove existing image
+          containers.podman.podman_image:
+            name: "{{ container_image }}"
+            state: absent
+          tags:
+            - never
+            - delete
+
         - name: Copy archive into container
           ansible.builtin.copy:
             src: "{{ archive_filename }}"
