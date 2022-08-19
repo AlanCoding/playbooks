@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Assure Default organization exists
+      awx.awx.organization:
+        name: Default
+
+    - name: create test playbooks project
+      awx.awx.project:
+        name: test-playbooks
+        organization: Default
+        scm_url: https://github.com/ansible/test-playbooks.git
+        scm_type: git
+
+    - name: assure demo inventory exists
+      awx.awx.inventory:
+        name: Demo Inventory
+        organization: Default
+
+    - name: create a sleep playbook
+      awx.awx.job_template:
+        name: test-playbooks sleep.yml
+        project: test-playbooks
+        playbook: sleep.yml
+        allow_simultaneous: true
+        inventory: Demo Inventory
+
+    - name: create a debug playbook
+      awx.awx.job_template:
+        name: test-playbooks debug.yml
+        project: test-playbooks
+        playbook: debug.yml
+        allow_simultaneous: true
+        inventory: Demo Inventory
+
+    - name: create a noisy playbook
+      awx.awx.job_template:
+        name: test-playbooks chatty_tasks.yml
+        project: test-playbooks
+        playbook: chatty_tasks.yml
+        allow_simultaneous: true
+        inventory: Demo Inventory
