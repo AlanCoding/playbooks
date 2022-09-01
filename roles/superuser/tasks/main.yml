@@ -17,6 +17,8 @@
   become_user: awx
   become: true
   run_once: true
+  environment:
+    AWX_LOGGING_MODE: stdout
 
 - name: Set the superuser password (set in private_vars.yml)
   shell: >
@@ -28,3 +30,5 @@
   register: result
   changed_when: "'Password updated' in result.stdout"
   run_once: true
+  environment:
+    AWX_LOGGING_MODE: stdout
