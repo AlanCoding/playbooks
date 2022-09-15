@@ -1,11 +1,18 @@
 ---
-- hosts: localhost
+- hosts: automationcontroller
   gather_facts: false
   connection: local
+  vars_files:
+    - vars/private_vars.yml
   tasks:
     - name: Assure Default organization exists
       awx.awx.organization:
         name: Default
+        tower_host: "{{ controller_base_url }}"
+        tower_username: "{{ awx_username }}"
+        tower_password: "{{ awx_password }}"
+        validate_certs: false
+      run_once: true
 
     - name: create test playbooks project
       awx.awx.project:
@@ -13,11 +20,21 @@
         organization: Default
         scm_url: https://github.com/ansible/test-playbooks.git
         scm_type: git
+        tower_host: "{{ controller_base_url }}"
+        tower_username: "{{ awx_username }}"
+        tower_password: "{{ awx_password }}"
+        validate_certs: false
+      run_once: true
 
     - name: assure demo inventory exists
       awx.awx.inventory:
         name: Demo Inventory
         organization: Default
+        tower_host: "{{ controller_base_url }}"
+        tower_username: "{{ awx_username }}"
+        tower_password: "{{ awx_password }}"
+        validate_certs: false
+      run_once: true
 
     - name: create a sleep playbook
       awx.awx.job_template:
@@ -26,6 +43,11 @@
         playbook: sleep.yml
         allow_simultaneous: true
         inventory: Demo Inventory
+        tower_host: "{{ controller_base_url }}"
+        tower_username: "{{ awx_username }}"
+        tower_password: "{{ awx_password }}"
+        validate_certs: false
+      run_once: true
 
     - name: create a debug playbook
       awx.awx.job_template:
@@ -34,6 +56,11 @@
         playbook: debug.yml
         allow_simultaneous: true
         inventory: Demo Inventory
+        tower_host: "{{ controller_base_url }}"
+        tower_username: "{{ awx_username }}"
+        tower_password: "{{ awx_password }}"
+        validate_certs: false
+      run_once: true
 
     - name: create a noisy playbook
       awx.awx.job_template:
@@ -42,3 +69,8 @@
         playbook: chatty_tasks.yml
         allow_simultaneous: true
         inventory: Demo Inventory
+        tower_host: "{{ controller_base_url }}"
+        tower_username: "{{ awx_username }}"
+        tower_password: "{{ awx_password }}"
+        validate_certs: false
+      run_once: true
