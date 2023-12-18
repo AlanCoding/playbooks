@@ -4,6 +4,11 @@
     awx_manage: /usr/local/bin/awx-manage
   when: ansible_connection == 'community.docker.docker'
 
+- name: Set special interpreter for VMs
+  set_fact:
+    ansible_python_interpreter: /var/lib/awx/venv/awx/bin/python
+  when: ansible_connection != 'community.docker.docker'
+
 - name: Create superuser without password
   shell: >
     {{ awx_manage }} createsuperuser
