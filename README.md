@@ -1,7 +1,6 @@
 ### Live patches for AWX and AAP controller
 
-This is a collection of Ansible content to help speed up processes of
-modifying and testing live servers.
+This has Ansible content to help speed up modifying and testing live servers.
 
 #### Configuration of inventory file
 
